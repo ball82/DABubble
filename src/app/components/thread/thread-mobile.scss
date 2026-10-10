@@ -1,0 +1,252 @@
+
+@mixin compact-thread {
+   
+    .thread-header {
+        box-sizing: border-box;
+        height: auto;
+        padding: 10px 14px 8px;
+        gap: 10px;
+    }
+
+    .thread-title {
+        gap: 0;
+        padding: 0 12px;
+
+        h2 {
+            font-size: 24px;
+            line-height: 1.2;
+        }
+    }
+
+    .thread-history { padding: 0 0 10px; }
+
+    .thread-divider { padding: 10px 21px; }
+
+    .thread-message {
+        gap: 16px;
+        padding: 10px 50px 10px 16px;
+
+        &.own { padding: 10px 16px 10px 50px; }
+    }
+
+    .thread-avatar {
+        .own & { box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+    }
+
+    .thread-bubble-column {
+        flex: 1 1 auto;
+
+        .thread-bubble { align-self: stretch; }
+        .thread-reactions { align-self: flex-start; }
+
+        .own & {
+            .thread-bubble,
+            .thread-reactions { align-self: flex-end; }
+        }
+    }
+
+    .thread-reaction {
+        height: 34px;
+        line-height: 22px;
+    }
+
+    .thread-reaction-picker {
+        right: 16px;
+        max-width: calc(100% - 32px);
+    }
+
+    .own .thread-reaction-picker { left: 16px; }
+
+    .thread-composer {
+        height: 110px;
+        margin: 0 8px 8px;
+        border-radius: 20px;
+
+        textarea {
+            padding-right: 22px;
+            font-size: 16px;
+            scrollbar-width: none;
+
+            &::placeholder { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        }
+    }
+
+    .thread-composer-actions {
+        right: 10px;
+        left: 10px;
+        min-height: 48px;
+        padding: 4px 0 6px;
+    }
+
+    // The chat never recolours its composer, so the narrow thread uses the same grey.
+    .thread-composer-button { color: #686a76; }
+
+    .thread-send { color: #444df2; }
+}
+
+@container thread (max-width: 430px) {
+    @include compact-thread;
+
+    .thread-message.actions-open .thread-hover-bar {
+        display: flex;
+        top: -14px;
+        bottom: auto;
+        right: 16px;
+        opacity: 1;
+        pointer-events: auto;
+        border-radius: 24px 24px 0 24px;
+    }
+
+    .own.thread-message.actions-open .thread-hover-bar {
+        right: auto;
+        left: 16px;
+    }
+}
+
+@container thread (max-width: 340px) {
+    .thread-header { padding: 10px 12px; }
+
+    .thread-divider { padding: 10px 12px; }
+
+    .thread-message {
+        gap: 8px;
+        padding: 10px 12px;
+
+        &.own { padding: 10px 12px; }
+    }
+
+    .thread-meta {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .thread-reaction-picker {
+        right: 12px;
+        max-width: calc(100% - 24px);
+    }
+
+    .own .thread-reaction-picker { left: 12px; }
+}
+
+@media (max-width: 1023px) {
+    .thread-hover-bar {
+        top: -14px;
+        right: 16px;
+        border-radius: 24px 24px 0 24px;
+    }
+
+    .own .thread-hover-bar {
+        right: auto;
+        left: 16px;
+        border-radius: 24px 24px 0 24px;
+    }
+}
+
+@media (max-width: 767px) {
+    .thread-content { border-radius: 0; }
+
+    .thread-hover-bar { display: none; }
+
+    @include compact-thread;
+
+    .thread-message.actions-open .thread-hover-bar {
+        display: flex;
+        top: -14px;
+        bottom: auto;
+        right: 16px;
+        opacity: 1;
+        pointer-events: auto;
+        border-radius: 24px 24px 0 24px;
+    }
+
+    .own.thread-message.actions-open .thread-hover-bar {
+        right: auto;
+        left: 16px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    :host {
+        position: fixed;
+        top: 80px;
+        right: 28px;
+        bottom: 16px;
+        left: calc(12px + 260px + 16px);
+        z-index: 20;
+        width: auto;
+        max-width: none !important;
+        margin: 0 !important;
+    }
+
+    :host-context(main.sidebar-closed) {
+        left: 28px;
+    }
+
+    .thread-content {
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+    }
+}
+
+@media (max-width: 1023px) {
+    .thread-title h2 {
+        font-size: 22px;
+        line-height: 1.2;
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1444.98px) {
+    :host {
+        position: fixed;
+        top: calc(clamp(64px, 6.25vw, 120px) + 14px);
+        right: calc(clamp(0px, 1.2vw, 16px) + 14px);
+        bottom: 14px;
+        left: calc(clamp(0px, 1.2vw, 16px) + 366px + 14px);
+        z-index: 20;
+        width: auto;
+        max-width: none !important;
+        margin: 0 !important;
+    }
+
+    :host-context(main.sidebar-closed) {
+        left: calc(clamp(0px, 1.2vw, 16px) + 14px);
+    }
+
+    .thread-content {
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+    }
+}
+
+@media (min-width: 1444.98px) {
+    :host {
+        flex: 0 0 485px !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    .thread-header {
+        align-items: center;
+        gap: 15px;
+        min-height: 110px;
+        padding: 20px 45px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .thread-title {
+        gap: 2px;
+        height: auto;
+        padding: 8px 12px;
+    }
+
+    .thread-channel {
+        font-size: 16px;
+    }
+
+    // 40px like the channel, where .chat-body pads with 30px 40px 40px above 1024px.
+    .thread-composer {
+        margin: 0 40px 40px;
+    }
+
+    .thread-content {
+        border-radius: 30px;
+    }
+}

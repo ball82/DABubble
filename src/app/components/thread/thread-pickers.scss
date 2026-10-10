@@ -1,0 +1,61 @@
+.thread-reaction-picker {
+    position: absolute;
+    top: 34px;
+    right: 40px;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    gap: 4px;
+    width: 232px;
+    padding: 8px;
+    background: white;
+    border: 1px solid #adb0d9;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+
+    .own & {
+        right: auto;
+        left: 40px;
+    }
+
+    button {
+        padding: 4px 6px;
+        border: none;
+        border-radius: 8px;
+        background: transparent;
+        font-size: 20px;
+        cursor: pointer;
+
+        &:hover { background: #eceefe; }
+    }
+}
+
+
+.thread-emoji-picker {
+    position: absolute;
+    // Anchored to the action row, which now sits absolutely on the bottom edge.
+    bottom: 70px;
+    left: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    gap: 4px;
+    max-width: calc(100% - 36px);
+    padding: 8px;
+    background: white;
+    border: 1px solid #adb0d9;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+
+    button {
+        padding: 4px 6px;
+        border: none;
+        border-radius: 8px;
+        background: transparent;
+        font-size: 20px;
+        cursor: pointer;
+
+        &:hover { background: #eceefe; }
+    }
+}

@@ -1,0 +1,97 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    font-family: 'Nunito';
+}
+
+/* Buttons und Eingabefelder starten ohne Browser-Rahmen; jede Komponente
+   bringt ihren eigenen Rahmen mit, wenn das Design einen vorsieht. */
+button,
+input,
+textarea {
+  border: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+input:focus {
+  outline: none;
+}
+
+
+/* Solange das Intro-Overlay läuft: statisches Login-Logo verdeckt halten
+   (das animierte Logo landet exakt darauf) und die Login-Card einblenden. */
+body.intro-active .login-page__logo {
+  opacity: 0;
+}
+
+body.intro-active .login-card {
+  animation: introCardAppear 1100ms 1400ms ease-out both;
+}
+
+@keyframes introCardAppear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@font-face {
+  font-family: 'Nunito';
+  src: url('../public/assets/font/Nunito/static/Nunito-ExtraLight.ttf') format('truetype');
+  font-weight: 200;
+}
+
+@font-face {
+  font-family: 'Nunito';
+  src: url('../public/assets/font/Nunito/static/Nunito-Light.ttf') format('truetype');
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: 'Nunito';
+  src: url('../public/assets/font/Nunito/static/Nunito-Regular.ttf') format('truetype');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Nunito';
+  src: url('../public/assets/font/Nunito/static/Nunito-Medium.ttf') format('truetype');
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Nunito';
+  src: url('../public/assets/font/Nunito/static/Nunito-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: 'Nunito';
+  src: url('../public/assets/font/Nunito/static/Nunito-Bold.ttf') format('truetype');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Nunito';
+  src: url('../public/assets/font/Nunito/static/Nunito-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+}
+
+
+@media (min-width: 601px) {
+  [class$="-page__header"],
+  [class$="-page__footer"] {
+    width: 100%;
+    max-width: 1445px;
+    margin-inline: auto;
+  }
+}

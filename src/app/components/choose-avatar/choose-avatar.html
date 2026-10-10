@@ -1,0 +1,66 @@
+<div class="avatar-page">
+  <header class="avatar-page__header">
+    <img class="avatar-page__logo" src="assets/img/Home-Workspaces.svg" alt="DABubble Logo" />
+  </header>
+
+  <section class="avatar-card">
+    <div class="avatar-card__top">
+      <button
+        type="button"
+        class="back-button"
+        aria-label="Zurück zur Registrierung"
+        (click)="goBack()"
+      >
+        <img src="assets/img/icons/arrow_back.svg" alt="" />
+      </button>
+
+      <h1 class="avatar-card__title">Wähle deinen Avatar</h1>
+    </div>
+
+    <div class="avatar-picker">
+      <img class="avatar-preview" [src]="previewUrl" alt="Dein gewählter Avatar" />
+
+      <div class="avatar-details">
+        <div class="avatar-details__text">
+          <p class="avatar-card__name">{{ userName }}</p>
+          <p class="avatar-card__hint">Aus der Liste wählen</p>
+        </div>
+
+        <div class="avatar-list" role="group" aria-label="Avatar auswählen">
+          @for (avatar of avatars; track avatar.url; let i = $index) {
+            <button
+              type="button"
+              class="avatar-list__item"
+              [class.avatar-list__item--active]="selectedIndex === i"
+              [attr.aria-pressed]="selectedIndex === i"
+              [attr.aria-label]="avatar.label"
+              (click)="selectAvatar(i)"
+            >
+              <img [src]="avatar.url" alt="" />
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+
+    @if (avatarError) {
+      <p class="avatar-card__error" role="alert">{{ avatarError }}</p>
+    }
+
+    <div class="avatar-card__actions">
+      <button
+        type="button"
+        class="btn btn--primary"
+        [disabled]="!hasSelection || isSubmitting"
+        (click)="continueToMain()"
+      >
+        Weiter
+      </button>
+    </div>
+  </section>
+
+  <footer class="avatar-page__footer">
+    <a class="avatar-page__footer-link" routerLink="/imprint">Impressum</a>
+    <a class="avatar-page__footer-link" routerLink="/privacy-policy">Datenschutz</a>
+  </footer>
+</div>

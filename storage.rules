@@ -1,0 +1,12 @@
+rules_version = '2';
+
+// Die App nutzt keinen Cloud Storage: Avatare liegen als statische Dateien im
+// Bundle. Deshalb ist der Bucket vollstaendig gesperrt. Wird spaeter ein Upload
+// gebraucht, hier gezielt einzelne Pfade oeffnen - nicht pauschal.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

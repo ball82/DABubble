@@ -1,0 +1,238 @@
+<main [class.sidebar-closed]="!sidebarOpen">
+    <header>
+        <div class="mobile-brand">
+            <button type="button" class="mobile-back" aria-label="Zurück zum Workspace-Menü" (click)="toggleSidebar()">
+                <span class="back-icon" aria-hidden="true"></span>
+            </button>
+            <img class="workspace-logo" src="./assets/img/Workspace-logo.svg" alt="" />
+            <span class="brand-name">Devspace</span>
+        </div>
+        <div class="brand">
+            <img class="logo" src="./assets/img/Logo.svg" alt="" />
+            <span class="brand-name">DABubble</span>
+        </div>
+        <div class="input-wrapper">
+            <input type="text" placeholder="Devspace durchsuchen" [value]="searchBox.query()"
+                role="combobox" aria-autocomplete="list" [attr.aria-expanded]="searchBox.open() && searchResults().length > 0"
+                [attr.aria-activedescendant]="searchBox.open() && searchResults().length ? 'search-result-' + searchBox.index() : null"
+                (input)="onSearchInput($any($event.target).value)" (focus)="searchBox.open.set(true)"
+                (focusout)="searchBox.close()" (keydown)="onSearchKeydown($event)" />
+            @if (searchBox.open() && searchResults().length) {
+            <ul class="search-results" role="listbox" aria-label="Suchvorschläge">
+                @for (result of searchResults(); track result.id; let index = $index) {
+                <li><button type="button" [id]="'search-result-' + index" role="option"
+                    [attr.aria-selected]="index === searchBox.index()" [class.active]="index === searchBox.index()"
+                    (mousedown)="$event.preventDefault()" (click)="selectSearchResult(result)">
+                    @if (result.kind === 'channel' || result.kind === 'user') {
+                    <span class="search-result-symbol" aria-hidden="true">{{ result.kind === 'channel' ? '#' : '@' }}</span>
+                    <span class="search-result-label">{{ result.label }}</span>
+                    } @else {
+                    <span class="search-result-label search-result-message-label">{{ result.label }}</span>
+                    <span class="search-result-context">{{ result.context }}</span>
+                    }
+                </button></li>
+                }
+            </ul>
+            }
+            @if (searchBox.open() && search.loading() && searchBox.query().trim() && !searchResults().length) {
+            <p class="search-status" role="status">Nachrichten werden durchsucht …</p>
+            } @else if (searchBox.open() && searchBox.query().trim() && !searchResults().length) {
+            <p class="search-status">Keine Treffer gefunden.</p>
+            }
+            <div class="search-icon">
+                <img class="icon-default" src="./assets/img/icons/search-default.svg" alt="Suchen">
+
+                <img class="icon-hover" src="./assets/img/icons/search.svg" alt="">
+            </div>
+
+        </div>
+        <div class="profile-wrapper" (click)="dialogs.toggleProfileMenu()">
+            <p>{{ userName() }}</p>
+            <div class="profile-picture-div">
+                <img class="profile-picture" [src]="userAvatarUrl()" alt="Profilbild">
+                <span class="status-dot" [class.offline]="!isOnline()" role="img"
+                    [attr.aria-label]="isOnline() ? 'Online' : 'Offline'"></span>
+            </div>
+
+            <button type="button" class="profile-chevron" aria-label="Profilmenü öffnen">
+                <span class="chevron-icon" aria-hidden="true"></span>
+            </button>
+        </div>
+        @if (dialogs.profileMenu) {
+        <div class="overlay" (click)="dialogs.closeProfileMenu()">
+
+            <div class="profile-menu" (click)="$event.stopPropagation()">
+                <button type="button" class="profile-menu-close" aria-label="Menü schließen"
+                    (click)="dialogs.closeProfileMenu()">
+                    <span class="dialog-icon close-icon" aria-hidden="true"></span>
+                </button>
+                <button type="button" (click)="dialogs.openProfilePopup()">
+                    <span class="menu-icon account-icon" aria-hidden="true"></span>Profil
+                </button>
+                <button type="button" (click)="logout()">
+                    <span class="menu-icon logout-icon" aria-hidden="true"></span>Log out
+                </button>
+            </div>
+        </div>
+        }
+        @if (dialogs.profilePopup) {
+        <div class="profile-dialog-backdrop" (click)="dialogs.closeProfilePopup()">
+            <section class="profile-dialog" role="dialog" aria-modal="true" aria-labelledby="profile-dialog-title"
+                (click)="$event.stopPropagation()">
+                <header class="profile-dialog-header">
+                    <h2 id="profile-dialog-title">Profil</h2>
+                    <button type="button" class="close-profile-button" aria-label="Profil schließen"
+                        (click)="dialogs.closeProfilePopup()">
+                        <span class="dialog-icon close-icon" aria-hidden="true"></span>
+                    </button>
+                </header>
+
+                <img class="profile-dialog-avatar" [src]="userAvatarUrl()" alt="Profilbild von {{ userName() }}">
+
+                <div class="profile-name-row">
+                    <h3>{{ userName() }}</h3>
+                    <button type="button" class="edit-profile-button"
+                        (click)="openProfileEdit()">Bearbeiten</button>
+                </div>
+
+                <p class="profile-status" [class.offline]="!isOnline()">
+                    <span aria-hidden="true"></span>
+                    {{ isOnline() ? 'Aktive' : 'Offline' }}
+                </p>
+
+                <div class="profile-email">
+                    <span class="dialog-icon mail-icon" aria-hidden="true"></span>
+                    <div>
+                        <h4>E-Mail-Adresse</h4>
+                        @if (userEmail()) {
+                        <a [href]="'mailto:' + userEmail()">{{ userEmail() }}</a>
+                        } @else {
+                        <p>Keine E-Mail-Adresse hinterlegt</p>
+                        }
+                    </div>
+                </div>
+            </section>
+        </div>
+        }
+    </header>
+    <section class="content" [class.sidebar-closed]="!sidebarOpen">
+    <app-sidebar
+      id="workspace-sidebar"
+      [class.closed]="!sidebarOpen"
+      [attr.inert]="sidebarOpen ? null : ''"
+      [attr.aria-hidden]="!sidebarOpen"
+      (conversationSelected)="selectConversation($event)"
+      (initialChannelSelected)="hideInitialThread()"
+      (channelCreateRequested)="openCreateChannelDialog()"
+      (newMessageRequested)="openNewMessage()"
+      (conversationOpened)="showChatOnMobile()"
+    ></app-sidebar>
+
+    <button type="button" class="fab-compose" aria-label="Neue Nachricht" (click)="openNewMessage(); showChatOnMobile()">
+      <img src="./assets/img/icons/edit_square-white.svg" alt="" />
+    </button>
+
+  @if (newMessageOpen) {
+  <app-new-message [users]="allUsers()" [channels]="allChannels()" [existingConversationUserIds]="directConversationUserIds()"
+    (conversationStarted)="startDirectConversation($event)" (channelStarted)="openMentionedChannel($event)"></app-new-message>
+  } @else {
+  <app-chat [isSelfChat]="selfChatOpen" [userName]="userName()" [userAvatarUrl]="userAvatarUrl()"
+    [directUser]="selectedDirectUser" [channel]="selectedChannel()" [users]="allUsers()" [messageAuthors]="allMessageAuthors()" [channels]="allChannels()"
+    (profileRequested)="dialogs.openProfilePopup()" (addPeopleRequested)="openMemberDialog($event)"
+    (messageRequested)="startDirectConversation($event)"
+    (channelInfoRequested)="openChannelInfo($event)"
+    (membersRequested)="openMembersDialog($event)" (threadRequested)="openThread($event)"
+    (channelRequested)="openMentionedChannel($event)"></app-chat>
+  }
+  @if (threadOpen && threadParent && selectedChannel() && !selfChatOpen && !newMessageOpen) {
+  <app-thread [channelId]="selectedChannel()?.id ?? null" [parent]="threadParent"
+    [channelName]="selectedChannel()?.name ?? 'Entwicklerteam'" [users]="allUsers()" [messageAuthors]="allMessageAuthors()" [channels]="allChannels()"
+    [userName]="userName()" [userAvatarUrl]="userAvatarUrl()"
+    (profileRequested)="dialogs.openProfilePopup()" (messageRequested)="startDirectConversation($event)"
+    (channelRequested)="openMentionedChannel($event)" (closed)="closeThread()"></app-thread>
+  }
+</section>
+
+<button
+  type="button"
+  class="sidebar-toggle"
+  [class.is-closed]="!sidebarOpen"
+  [style.height.px]="sidebarOpen ? closeLabelHeight() : openLabelHeight()"
+  (click)="toggleSidebar()"
+  [attr.aria-expanded]="sidebarOpen"
+  [attr.aria-label]="sidebarOpen ? 'Workspace-Menü schließen' : 'Workspace-Menü öffnen'"
+  aria-controls="workspace-sidebar"
+>
+  <span class="toggle-label" aria-hidden="true">
+    <span class="toggle-text" [class.is-visible]="sidebarOpen">Workspace-Menü schließen</span>
+    <span class="toggle-text" [class.is-visible]="!sidebarOpen">Workspace-Menü öffnen</span>
+    <span #closeLabel class="toggle-text toggle-measure">Workspace-Menü schließen</span>
+    <span #openLabel class="toggle-text toggle-measure">Workspace-Menü öffnen</span>
+  </span>
+
+  <span class="toggle-icon" aria-hidden="true">
+    <img
+      class="toggle-icon-default"
+      [src]="sidebarOpen ? 'assets/img/icons/hide-navigation.svg' : 'assets/img/icons/show-navigation.svg'"
+      alt=""
+    >
+    <img
+      class="toggle-icon-hover"
+      [src]="sidebarOpen ? 'assets/img/icons/hide-navigation_hover.svg' : 'assets/img/icons/show-navigation-hover.svg'"
+      alt=""
+    >
+  </span>
+</button>
+
+@if (dialogs.createChannel) {
+  <app-create-channel-dialog
+    [existingChannels]="channelNames()"
+    (closed)="dialogs.closeCreateChannel()"
+    (created)="createChannel($event)"
+  />
+}
+
+@if (dialogs.members) {
+  <app-members-dialog
+    [members]="channelMembers()"
+    [currentUserId]="currentUserId"
+    [anchor]="dialogs.membersAnchor()"
+    [canAddMembers]="canManageSelectedChannel()"
+    (closed)="dialogs.closeMembers()"
+    (addRequested)="openMemberDialogFromList()"
+    (messageRequested)="startDirectConversation($event)"
+  />
+}
+
+@if (dialogs.addPeople) {
+  <app-add-people-dialog
+    [users]="invitableUsers()"
+    [submitLabel]="dialogs.memberLabel"
+    [channelName]="dialogs.memberChannel()?.name ?? ''"
+    [compact]="dialogs.memberForExistingChannel"
+    [anchor]="dialogs.addPeopleAnchor()"
+    (closed)="dialogs.closeAddPeople()"
+    (confirmed)="addMembers($event)"
+  />
+}
+
+@if (dialogs.channelInfo && selectedChannel(); as channel) {
+  <app-channel-info-dialog [channel]="channel" [creator]="selectedChannelCreator()" [currentUserId]="currentUserId" [anchor]="dialogs.channelInfoAnchor()"
+    [existingChannels]="channelNames()" [saveError]="channelInfoSaveError" [saving]="channelInfoSaving" [saveVersion]="channelInfoSaveVersion"
+    (closed)="dialogs.closeChannelInfo()" (saved)="saveChannelInfo($event)" (left)="leaveSelectedChannel()"
+    (messageRequested)="startDirectConversation($event)" />
+}
+</main>
+
+@if (dialogs.profileEdit) {
+  <app-profile-dialog
+    [profile]="currentUser()!"
+    [editMode]="true"
+    [saveError]="profileSaveError"
+    [deleteError]="accountDeleteError"
+    [deleteBusy]="accountDeleteBusy"
+    (closed)="dialogs.closeProfileEdit()"
+    (saved)="saveProfile($event)"
+    (deleteConfirmed)="deleteAccount()"
+  />
+}

@@ -1,0 +1,55 @@
+import { Routes } from '@angular/router';
+import { Login } from './components/login/login';
+import { Register } from './components/register/register';
+import { ChooseAvatar } from './components/choose-avatar/choose-avatar';
+import { ResetPassword } from './components/reset-password/reset-password';
+import { SendMail } from './components/send-mail/send-mail';
+import { MainLayout } from './components/main-layout/main-layout';
+import { authGuard } from './services/auth.guard';
+import { Imprint } from './components/imprint/imprint';
+import { PrivacyPolicy } from './components/privacy-policy/privacy-policy';
+
+export const routes: Routes = [
+  {
+    path: '',
+    redirectTo: 'login',
+    pathMatch: 'full',
+  },
+  {
+    path: 'login',
+    component: Login,
+  },
+  {
+    path: 'register',
+    component: Register,
+  },
+  {
+    path: 'choose-avatar',
+    component: ChooseAvatar,
+  },
+  {
+    path: 'send-mail',
+    component: SendMail,
+  },
+  {
+    path: 'reset-password',
+    component: ResetPassword,
+  },
+  {
+    path: 'main',
+    component: MainLayout,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'imprint',
+    component: Imprint,
+  },
+  {
+    path: 'privacy-policy',
+    component: PrivacyPolicy,
+  },
+  {
+    path: '**',
+    redirectTo: 'login',
+  },
+];

@@ -1,0 +1,147 @@
+// The channel header stays on one line and the channel name is always written out in full:
+// the name keeps its natural width and the member avatars only use the space that is left.
+.channel-chat-header {
+    justify-content: space-between;
+    flex-wrap: nowrap;
+}
+
+.channel-chat-body {
+    justify-content: flex-end;
+}
+
+.channel-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 8px 24px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: #2b2d42;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    font-family: inherit;
+    cursor: pointer;
+    transition: color 120ms ease, background-color 120ms ease;
+
+    &:hover, &:focus-visible { color: #444df2; background: #eceefe; outline: none; }
+}
+
+.channel-arrow { width: 24px; height: 24px; background: url('../../../../public/assets/img/icons/arrow.svg') center / contain no-repeat; }
+.channel-title:hover .channel-arrow, .channel-title:focus-visible .channel-arrow { background-image: url('../../../../public/assets/img/icons/arrow-hover.svg'); }
+
+// The actions take only the space the name leaves. When the avatars and count do not fit,
+// they wrap onto a second row that is clipped away, while the add-member button stays visible.
+.channel-header-actions {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    column-gap: 20px;
+    row-gap: 20px;
+    min-width: 40px;
+    height: 40px;
+    margin-left: auto;
+    overflow: clip;
+    overflow-clip-margin: 6px;
+}
+
+.channel-members {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
+
+    border-radius: 30px;
+    transition: background-color 0.3s ease;
+
+    &:hover,
+    &:focus-visible {
+        background: #eceefe;
+        outline: none;
+
+        .member-count { color: #535af1; }
+    }
+}
+
+.member-avatars {
+    display: flex;
+
+    img {
+        width: 40px;
+        height: 40px;
+        box-sizing: border-box;
+        border: 2px solid white;
+        border-radius: 50%;
+        object-fit: cover;
+        background: #eceefe;
+        transition: transform 120ms ease;
+
+        &:not(:first-child) {
+            margin-left: -12px;
+        }
+    }
+}
+
+.member-count {
+    color: #000;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.add-member-button {
+    order: -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: #eceefe;
+    color: black;
+    cursor: pointer;
+    transition: color 120ms ease, background-color 120ms ease;
+
+    &:hover,
+    &:focus-visible {
+        color: #535af1;
+        background: #dce0fc;
+        outline: none;
+    }
+}
+
+// Figma "44. Add members button" (person_add on #ECEEFE). The circle always matches the member
+// avatars next to it; the icon is a little larger than in Figma, 65% of the circle instead of 60%.
+.add-member-icon {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    img {
+        position: absolute;
+        inset: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+        transition: opacity 0.2s ease;
+    }
+}
+
+.add-member-icon-hover { opacity: 0; }
+
+.add-member-button:hover .add-member-icon img:not(.add-member-icon-hover),
+.add-member-button:focus-visible .add-member-icon img:not(.add-member-icon-hover) { opacity: 0; }
+
+.add-member-button:hover .add-member-icon-hover,
+.add-member-button:focus-visible .add-member-icon-hover { opacity: 1; }
